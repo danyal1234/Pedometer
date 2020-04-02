@@ -60,4 +60,6 @@
     <string name="ispaused">Podomètre en pause</string>
     <string name="pause_on_power_title">Pause prendant la charge</string>
     <string name="pause_on_power_summary">Stopper Podomètre pendant la charge du périphérique</string>
+    <string name="dark_theme">Activer / désactiver le thème sombre</string>
+    <string name="dark_theme_title">Thème sombre</string>
 </resources>

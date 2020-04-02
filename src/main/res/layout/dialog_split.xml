@@ -2,25 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="?attr/backgroundColour" >
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:padding="10dp" >
+        android:padding="10dp"
+        android:background="?attr/backgroundColour" >
 
         <TextView
             android:id="@+id/stopped"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/no_split_active" />
+            android:text="@string/no_split_active"
+            android:textColor="?attr/textColour" />
 
         <RelativeLayout
             android:id="@+id/started"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent"
+            android:background="?attr/backgroundColour" >
 
             <TextView
                 android:id="@+id/date"
@@ -28,7 +32,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/distance"
-                android:layout_marginTop="15dp" />
+                android:layout_marginTop="15dp"
+                android:textColor="?attr/textColour" />
 
             <TextView
                 android:id="@+id/distanceunit"
@@ -36,7 +41,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/distance"
                 android:layout_alignBottom="@+id/distance"
-                android:layout_alignParentRight="true" />
+                android:layout_alignParentRight="true"
+                android:textColor="?attr/textColour" />
 
             <TextView
                 android:id="@+id/steps"
@@ -44,7 +50,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:textSize="50sp" />
+                android:textSize="50sp"
+                android:textColor="?attr/textColour" />
 
             <TextView
                 android:id="@+id/distance"
@@ -52,7 +59,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/steps"
                 android:layout_centerHorizontal="true"
-                android:textSize="50sp" />
+                android:textSize="50sp"
+                android:textColor="?attr/textColour" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -60,7 +68,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@id/steps"
                 android:layout_alignParentRight="true"
-                android:text="@string/steps" />
+                android:text="@string/steps"
+                android:textColor="?attr/textColour"/>
         </RelativeLayout>
     </FrameLayout>
 
@@ -73,7 +82,8 @@
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:background="?attr/backgroundColour" >
 
         <Button
             android:id="@+id/start"

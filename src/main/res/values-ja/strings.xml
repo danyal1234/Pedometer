@@ -60,4 +60,6 @@
     <string name="no_sensor">センサーが見つかりません</string>
     <string name="no_sensor_explain">このアプリは、専用のハードウェア歩数センサーが必要です - お使いのデバイスにはありません。このアプリはお使いのデバイスで実行できません。</string>
     <string name="permission_external_storage">外部ストレージのアクセス許可がありません</string>
+    <string name="dark_theme">ダークテーマを有効/無効にする</string>
+    <string name="dark_theme_title">暗いテーマ</string>
 </resources>

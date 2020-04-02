@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+
     <Preference
         android:key="goal"
         android:title="@string/goal"/>
@@ -17,10 +18,14 @@
     <Preference
         android:key="export"
         android:summary="@string/export_summary"
-        android:title="@string/export_title"/>
+        android:title="@string/export_title" />
     <Preference
         android:key="import"
         android:summary="@string/import_summary"
         android:title="@string/import_title"/>
+    <SwitchPreference
+        android:key="darkmode"
+        android:summary="@string/dark_theme"
+        android:title="@string/dark_theme_title"/>
 
 </PreferenceScreen>

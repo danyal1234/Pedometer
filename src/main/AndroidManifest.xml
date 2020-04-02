@@ -6,9 +6,7 @@
     android:versionCode="1511"
     android:versionName="1.5.11">
 
-    <uses-sdk
-        android:minSdkVersion="19"
-        android:targetSdkVersion="26"/>
+    <uses-sdk android:targetSdkVersion="26"/>
 
     <uses-feature
         android:name="android.hardware.sensor.stepcounter"

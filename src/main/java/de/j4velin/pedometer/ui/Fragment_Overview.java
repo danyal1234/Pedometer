@@ -28,6 +28,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,18 +37,30 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.BarModel;
 import org.eazegraph.lib.models.PieModel;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.DataPointInterface;
+import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.OnDataPointTapListener;
+import com.jjoe64.graphview.series.Series;
+
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.StringTokenizer;
 
 import de.j4velin.pedometer.BuildConfig;
 import de.j4velin.pedometer.Database;
@@ -57,20 +70,44 @@ import de.j4velin.pedometer.util.API26Wrapper;
 import de.j4velin.pedometer.util.Logger;
 import de.j4velin.pedometer.util.Util;
 
-public class Fragment_Overview extends Fragment implements SensorEventListener {
+public class Fragment_Overview extends Fragment implements SensorEventListener, OnClickListener {
 
     private TextView stepsView, totalView, averageView;
     private PieModel sliceGoal, sliceCurrent;
     private PieChart pg;
 
-    private int todayOffset, total_start, goal, since_boot, total_days;
+    private int todayOffset, total_start, goal, since_boot, total_days, resetOffset;
     public final static NumberFormat formatter = NumberFormat.getInstance(Locale.getDefault());
     private boolean showSteps = true;
+    private boolean darkThemeEnabled;
+    private GraphView linegraph;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        Database db = Database.getInstance(getActivity());
+
+        String savedString = prefs.getString("yvalues", "");
+        if (savedString.length() != 0) {
+            StringTokenizer stTokenizer = new StringTokenizer(savedString, ",");
+            for (int i = 0; i < db.getYValuesLength(); i++) {
+                db.setYValue(i, Integer.parseInt(stTokenizer.nextToken()));
+            }
+        }
+
+        if (prefs.getBoolean("darkmode", false)) {
+            darkThemeEnabled = true;
+            getActivity().setTheme(R.style.DarkTheme);
+        } else {
+            darkThemeEnabled = false;
+            getActivity().setTheme(R.style.LightTheme);
+        }
+
         if (Build.VERSION.SDK_INT >= 26) {
             API26Wrapper.startForegroundService(getActivity(),
                     new Intent(getActivity(), SensorListener.class));
@@ -88,12 +125,31 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 
         pg = (PieChart) v.findViewById(R.id.graph);
 
-        // slice for the steps taken today
-        sliceCurrent = new PieModel("", 0, Color.parseColor("#99CC00"));
-        pg.addPieSlice(sliceCurrent);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        // slice for the "missing" steps until reaching the goal
-        sliceGoal = new PieModel("", Fragment_Settings.DEFAULT_GOAL, Color.parseColor("#CC0000"));
+        ToggleButton toggle = (ToggleButton) v.findViewById(R.id.toggleButton);
+        toggle.setChecked(false);
+
+        Button b = (Button) v.findViewById(R.id.reset);
+        b.setOnClickListener(this);
+
+        if (prefs.getBoolean("darkmode", false)) {
+            getActivity().setTheme(R.style.DarkTheme);
+            if (!darkThemeEnabled) {
+                getActivity().recreate();
+            }
+            sliceCurrent = new PieModel("", 0, Color.parseColor("#15CBEB"));
+            sliceGoal = new PieModel("", 0, Color.parseColor("#707070"));
+        } else {
+            getActivity().setTheme(R.style.LightTheme);
+            if (darkThemeEnabled) {
+                getActivity().recreate();
+            }
+            sliceCurrent = new PieModel("", 0, Color.parseColor("#99CC00"));
+            sliceGoal = new PieModel("", Fragment_Settings.DEFAULT_GOAL, Color.parseColor("#CC0000"));
+        }
+
+        pg.addPieSlice(sliceCurrent);
         pg.addPieSlice(sliceGoal);
 
         pg.setOnClickListener(new OnClickListener() {
@@ -111,11 +167,115 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
     }
 
     @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.reset:
+                resetOffset = todayOffset;
+                updatePie();
+                break;
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+
+        // get your ToggleButton
+        final ToggleButton toggle = (ToggleButton) getView().findViewById(R.id.toggleButton);
+
+        // attach an OnClickListener
+        toggle.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (toggle.isChecked()) {
+                    getView().findViewById(R.id.bargraph).setVisibility(View.GONE);
+                } else {
+                    getView().findViewById(R.id.bargraph).setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         Database db = Database.getInstance(getActivity());
+
+        linegraph = (GraphView) getView().findViewById(R.id.linegraph);
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[] {
+                new DataPoint(0, db.getYValue(0)),
+                new DataPoint(1, db.getYValue(1)),
+                new DataPoint(2, db.getYValue(2)),
+                new DataPoint(3, db.getYValue(3)),
+                new DataPoint(4, db.getYValue(4)),
+                new DataPoint(5, db.getYValue(5)),
+                new DataPoint(6, db.getYValue(6)),
+                new DataPoint(7, db.getYValue(7)),
+                new DataPoint(8, db.getYValue(8)),
+                new DataPoint(9, db.getYValue(9)),
+                new DataPoint(10, db.getYValue(10)),
+                new DataPoint(11, db.getYValue(11)),
+                new DataPoint(12, db.getYValue(12)),
+                new DataPoint(13, db.getYValue(13)),
+                new DataPoint(14, db.getYValue(14)),
+                new DataPoint(15, db.getYValue(15)),
+                new DataPoint(16, db.getYValue(16)),
+                new DataPoint(17, db.getYValue(17)),
+                new DataPoint(18, db.getYValue(18)),
+                new DataPoint(19, db.getYValue(19)),
+                new DataPoint(20, db.getYValue(20)),
+                new DataPoint(21, db.getYValue(21)),
+                new DataPoint(22, db.getYValue(22)),
+                new DataPoint(23, db.getYValue(23))
+        });
+        linegraph.addSeries(series);
+        series.setDrawDataPoints(true);
+
+        // register tap on series callback
+        series.setOnDataPointTapListener(new OnDataPointTapListener() {
+            @Override
+            public void onTap(Series series, DataPointInterface dataPoint) {
+                Toast.makeText(linegraph.getContext(), "Amount of steps taken:" + dataPoint.getY() + "", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        if (darkThemeEnabled) {
+            linegraph.getGridLabelRenderer().setGridColor(Color.WHITE);
+            linegraph.getGridLabelRenderer().setHorizontalLabelsColor(Color.WHITE);
+            linegraph.getGridLabelRenderer().setVerticalLabelsColor(Color.WHITE);
+            linegraph.getGridLabelRenderer().setHorizontalAxisTitleColor(Color.WHITE);
+            linegraph.getGridLabelRenderer().setVerticalAxisTitleColor(Color.WHITE);
+            linegraph.getGridLabelRenderer().reloadStyles();
+        } else {
+            linegraph.getGridLabelRenderer().setGridColor(Color.BLACK);
+            linegraph.getGridLabelRenderer().setHorizontalLabelsColor(Color.BLACK);
+            linegraph.getGridLabelRenderer().setVerticalLabelsColor(Color.BLACK);
+            linegraph.getGridLabelRenderer().setHorizontalAxisTitleColor(Color.BLACK);
+            linegraph.getGridLabelRenderer().setVerticalAxisTitleColor(Color.BLACK);
+            linegraph.getGridLabelRenderer().reloadStyles();
+        }
+
+        linegraph.setTitle("Hourly Chart");
+        linegraph.getGridLabelRenderer().setVerticalAxisTitle("Steps");
+        linegraph.getGridLabelRenderer().setHorizontalAxisTitle("Hour (24hr format)");
+
+        // set manual X bounds
+        linegraph.getViewport().setXAxisBoundsManual(true);
+
+        Calendar rightNow = Calendar.getInstance();
+        int currentHourIn24Format = rightNow.get(Calendar.HOUR_OF_DAY);
+
+        int minview = currentHourIn24Format - 6 > 0 ? currentHourIn24Format : 0;
+        int maxView = minview == 0 ? maxView = 12 : currentHourIn24Format + 6;
+        maxView = maxView > 23 ? 23 : maxView;
+        minview = maxView == 23 ? minview = 11 : minview;
+
+        linegraph.getViewport().setMinX(minview);
+        linegraph.getViewport().setMaxX(maxView);
+        linegraph.getViewport().getMinX(false);
+
+        // enable scrolling
+        linegraph.getViewport().setScrollable(true);
+
+        getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
 
         if (BuildConfig.DEBUG) db.logState();
         // read todays offset
@@ -130,7 +290,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 
         // register a sensorlistener to live update the UI if a step is taken
         SensorManager sm = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-        Sensor sensor = sm.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        Sensor sensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if (sensor == null) {
             new AlertDialog.Builder(getActivity()).setTitle(R.string.no_sensor)
                     .setMessage(R.string.no_sensor_explain)
@@ -220,22 +380,128 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
 
     @Override
     public void onSensorChanged(final SensorEvent event) {
+        float x = event.values[0];
+        float y = event.values[1];
+        float z = event.values[2];
+        double total = (x * x + y * y + z * z)/(SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
+        Database db = Database.getInstance(getActivity());
+
         if (BuildConfig.DEBUG) Logger.log(
                 "UI - sensorChanged | todayOffset: " + todayOffset + " since boot: " +
-                        event.values[0]);
-        if (event.values[0] > Integer.MAX_VALUE || event.values[0] == 0) {
+                        total);
+        if (total > Integer.MAX_VALUE || total == 0) {
             return;
         }
         if (todayOffset == Integer.MIN_VALUE) {
             // no values for today
             // we dont know when the reboot was, so set todays steps to 0 by
             // initializing them with -STEPS_SINCE_BOOT
-            todayOffset = -(int) event.values[0];
-            Database db = Database.getInstance(getActivity());
-            db.insertNewDay(Util.getToday(), (int) event.values[0]);
-            db.close();
+            todayOffset = -(int) total;
+            db.insertNewDay(Util.getToday(), (int) total);
         }
-        since_boot = (int) event.values[0];
+
+        if ((int) total >  1) {
+            Calendar rightNow = Calendar.getInstance();
+            int currentHourIn24Format = rightNow.get(Calendar.HOUR_OF_DAY);
+
+            double minXval = linegraph.getViewport().getMinX(false);
+            double maxXval = linegraph.getViewport().getMaxX(false);
+
+            if (currentHourIn24Format != db.getCurrentHour()) {
+                if (currentHourIn24Format < db.getCurrentHour()) {
+                    db.clearYValues();
+                }
+                db.setStepsInHour(0);
+                db.setCurrentHour(currentHourIn24Format);
+            }
+
+            since_boot++;
+            db.setStepsInHour(db.getStepsInHour() + 1);
+            db.setYValue(currentHourIn24Format, db.getStepsInHour());
+
+            final GraphView linegraph = (GraphView) getView().findViewById(R.id.linegraph);
+            linegraph.removeAllSeries();
+
+            LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[] {
+                    new DataPoint(0, db.getYValue(0)),
+                    new DataPoint(1, db.getYValue(1)),
+                    new DataPoint(2, db.getYValue(2)),
+                    new DataPoint(3, db.getYValue(3)),
+                    new DataPoint(4, db.getYValue(4)),
+                    new DataPoint(5, db.getYValue(5)),
+                    new DataPoint(6, db.getYValue(6)),
+                    new DataPoint(7, db.getYValue(7)),
+                    new DataPoint(8, db.getYValue(8)),
+                    new DataPoint(9, db.getYValue(9)),
+                    new DataPoint(10, db.getYValue(10)),
+                    new DataPoint(11, db.getYValue(11)),
+                    new DataPoint(12, db.getYValue(12)),
+                    new DataPoint(13, db.getYValue(13)),
+                    new DataPoint(14, db.getYValue(14)),
+                    new DataPoint(15, db.getYValue(15)),
+                    new DataPoint(16, db.getYValue(16)),
+                    new DataPoint(17, db.getYValue(17)),
+                    new DataPoint(18, db.getYValue(18)),
+                    new DataPoint(19, db.getYValue(19)),
+                    new DataPoint(20, db.getYValue(20)),
+                    new DataPoint(21, db.getYValue(21)),
+                    new DataPoint(22, db.getYValue(22)),
+                    new DataPoint(23, db.getYValue(23))
+            });
+            linegraph.addSeries(series);
+            series.setDrawDataPoints(true);
+
+            // register tap on series callback
+            series.setOnDataPointTapListener(new OnDataPointTapListener() {
+                @Override
+                public void onTap(Series series, DataPointInterface dataPoint) {
+                    Toast.makeText(linegraph.getContext(), "Amount of steps taken:" + dataPoint.getY() + "", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            if (darkThemeEnabled) {
+                linegraph.getGridLabelRenderer().setGridColor(Color.WHITE);
+                linegraph.getGridLabelRenderer().setHorizontalLabelsColor(Color.WHITE);
+                linegraph.getGridLabelRenderer().setVerticalLabelsColor(Color.WHITE);
+                linegraph.getGridLabelRenderer().setHorizontalAxisTitleColor(Color.WHITE);
+                linegraph.getGridLabelRenderer().setVerticalAxisTitleColor(Color.WHITE);
+                linegraph.getGridLabelRenderer().reloadStyles();
+            } else {
+                linegraph.getGridLabelRenderer().setGridColor(Color.BLACK);
+                linegraph.getGridLabelRenderer().setHorizontalLabelsColor(Color.BLACK);
+                linegraph.getGridLabelRenderer().setVerticalLabelsColor(Color.BLACK);
+                linegraph.getGridLabelRenderer().setHorizontalAxisTitleColor(Color.BLACK);
+                linegraph.getGridLabelRenderer().setVerticalAxisTitleColor(Color.BLACK);
+                linegraph.getGridLabelRenderer().reloadStyles();
+            }
+
+            linegraph.setTitle("Hourly Chart");
+            linegraph.getGridLabelRenderer().setVerticalAxisTitle("Steps");
+            linegraph.getGridLabelRenderer().setHorizontalAxisTitle("Hour (24hr format)");
+
+            // set manual X bounds
+            linegraph.getViewport().setXAxisBoundsManual(true);
+            linegraph.getViewport().setMinX(minXval);
+            linegraph.getViewport().setMaxX(maxXval);
+
+            // enable scrolling
+            linegraph.getViewport().setScrollable(true);
+
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            StringBuilder string = new StringBuilder();
+            for (int i = 0; i < db.getYValuesLength(); i++) {
+                string.append(db.getYValue(i)).append(",");
+            }
+
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("yvalues",string.toString());
+            editor.apply();
+
+
+        }
+
+        db.close();
         updatePie();
     }
 
@@ -247,7 +513,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
     private void updatePie() {
         if (BuildConfig.DEBUG) Logger.log("UI - update steps: " + since_boot);
         // todayOffset might still be Integer.MIN_VALUE on first start
-        int steps_today = Math.max(todayOffset + since_boot, 0);
+        int steps_today = Math.max(todayOffset + since_boot - resetOffset, 0);
         sliceCurrent.setValue(steps_today);
         if (goal - steps_today > 0) {
             // goal not reached yet
@@ -314,7 +580,7 @@ public class Fragment_Overview extends Fragment implements SensorEventListener {
         db.close();
         for (int i = last.size() - 1; i > 0; i--) {
             Pair<Long, Integer> current = last.get(i);
-            steps = current.second;
+            steps = 10000;
             if (steps > 0) {
                 bm = new BarModel(df.format(new Date(current.first)), 0,
                         steps > goal ? Color.parseColor("#99CC00") : Color.parseColor("#0099cc"));

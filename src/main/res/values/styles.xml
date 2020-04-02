@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="DarkTheme">
+        <item name="backgroundColour">#000000</item>
+        <item name="textColour">#ffffff</item>
+    </style>
+
+    <style name="LightTheme">
+        <item name="textColour">#000000</item>
+        <item name="backgroundColour">#ffffff</item>
+    </style>
+</resources>

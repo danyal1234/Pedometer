@@ -64,5 +64,7 @@
     <string name="no_sensor">Sensor não encontrado</string>
     <string name="no_sensor_explain">Este aplicativo requer um sensor de passo de hardware dedicado - o seu dispositivo não possui o sensor. Este aplicativo não será executado no seu dispositivo.</string>
     <string name="permission_external_storage">Sem permissão para acessar o armazenamento externo</string>
+    <string name="dark_theme">Ativar / desativar o tema escuro</string>
+    <string name="dark_theme_title">Tema escuro</string>
 
 </resources>

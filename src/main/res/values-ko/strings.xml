@@ -58,4 +58,6 @@
     <string name="ispaused">피도미터가 일시정지되었습니다.</string>
     <string name="pause_on_power_title">충전중에 측정 일시정지</string>
     <string name="pause_on_power_summary">기기가 충전중일때는 측정하지 않습니다</string>
+    <string name="dark_theme">어두운 테마 활성화 / 비활성화</string>
+    <string name="dark_theme_title">어두운 테마</string>
 </resources>

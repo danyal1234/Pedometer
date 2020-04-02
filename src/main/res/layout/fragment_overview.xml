@@ -3,6 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="5dp"
+                android:background="?attr/backgroundColour"
                 tools:context=".Activity_Main">
 
     <org.eazegraph.lib.charts.PieChart
@@ -33,12 +34,14 @@
         android:text="@string/steps"
         android:textSize="20sp"/>
 
+
     <LinearLayout
         android:id="@+id/averageandtotal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/graph"
+        android:background="?attr/backgroundColour"
         android:layout_marginTop="20dp">
 
         <TextView
@@ -48,7 +51,8 @@
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="?attr/textColour"/>
 
         <TextView
             android:id="@+id/total"
@@ -57,13 +61,22 @@
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="?attr/textColour"/>
+
+        <Button
+            android:id="@+id/reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClickBtn"
+            android:text="Reset Count" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/averageandtotaltext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/backgroundColour"
         android:layout_below="@id/averageandtotal">
 
         <TextView
@@ -71,14 +84,23 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:text="@string/average"/>
+            android:text="@string/average"
+            android:textColor="?attr/textColour"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:text="@string/total"/>
+            android:text="@string/total"
+            android:textColor="?attr/textColour"/>
+
+        <ToggleButton
+            android:id="@+id/toggleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff="Weekly"
+            android:textOn="Hourly" />
     </LinearLayout>
 
     <org.eazegraph.lib.charts.BarChart
@@ -90,5 +112,18 @@
         android:layout_marginTop="50dp"
         eaze:egLegendHeight="35dp"
         eaze:egShowValues="true"/>
+
+    <LinearLayout
+        android:layout_width="406dp"
+        android:layout_height="165dp"
+        android:layout_below="@+id/bargraph"
+        android:layout_marginTop="11dp"
+        android:orientation="horizontal">
+
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/linegraph"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
 </RelativeLayout>

@@ -36,6 +36,9 @@ public class Database extends SQLiteOpenHelper {
     private final static String DB_NAME = "steps";
     private final static int DB_VERSION = 2;
 
+    private int[] yvalues  = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    private int currentHour, stepsInHour;
+
     private static Database instance;
     private static final AtomicInteger openCounter = new AtomicInteger();
 
@@ -305,7 +308,7 @@ public class Database extends SQLiteOpenHelper {
      * Only call this directly after boot, otherwise it might remove the current
      * day as the current offset is likely to be negative
      */
-    void removeNegativeEntries() {
+    public void removeNegativeEntries() {
         getWritableDatabase().delete(DB_NAME, "steps < ?", new String[]{"0"});
     }
 
@@ -379,5 +382,60 @@ public class Database extends SQLiteOpenHelper {
     public int getCurrentSteps() {
         int re = getSteps(-1);
         return re == Integer.MIN_VALUE ? 0 : re;
+    }
+
+    public void setCurrentHour(int hour) {
+        currentHour = hour;
+    }
+
+    public int getCurrentHour() {
+        return currentHour;
+    }
+
+    public void setStepsInHour(int steps) {
+        stepsInHour = steps;
+    }
+
+    public int getStepsInHour() {
+        return stepsInHour;
+    }
+
+    public void setYValue(int index, int value) {
+        yvalues[index] = value;
+    }
+
+    public int getYValue(int index) {
+        return yvalues[index];
+    }
+
+    public int getYValuesLength() {
+        return yvalues.length;
+    }
+
+    public void clearYValues() {
+        yvalues[0] = 0;
+        yvalues[1] = 0;
+        yvalues[2] = 0;
+        yvalues[3] = 0;
+        yvalues[4] = 0;
+        yvalues[5] = 0;
+        yvalues[6] = 0;
+        yvalues[7] = 0;
+        yvalues[8] = 0;
+        yvalues[9] = 0;
+        yvalues[10] = 0;
+        yvalues[11] = 0;
+        yvalues[12] = 0;
+        yvalues[13] = 0;
+        yvalues[14] = 0;
+        yvalues[15] = 0;
+        yvalues[16] = 0;
+        yvalues[17] = 0;
+        yvalues[18] = 0;
+        yvalues[19] = 0;
+        yvalues[20] = 0;
+        yvalues[21] = 0;
+        yvalues[22] = 0;
+        yvalues[23] = 0;
     }
 }

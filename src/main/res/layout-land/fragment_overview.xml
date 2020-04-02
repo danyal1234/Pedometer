@@ -2,6 +2,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="?attr/backgroundColour"
                 android:padding="5dp"
                 tools:context=".Activity_Main">
 
@@ -41,6 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/bargraph"
         android:layout_alignParentRight="true"
+        android:background="?attr/backgroundColour"
         android:layout_alignTop="@+id/graph">
 
         <TextView
@@ -50,7 +52,8 @@
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="?attr/textColour"/>
 
         <TextView
             android:id="@+id/total"
@@ -59,13 +62,19 @@
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="?attr/textColour"/>
+
+        <FrameLayout
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"></FrameLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/averageandtotaltext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/backgroundColour"
         android:layout_alignLeft="@+id/averageandtotal"
         android:layout_below="@id/averageandtotal">
 
@@ -75,7 +84,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:text="@string/average"/>
+            android:text="@string/average"
+            android:textColor="?attr/textColour"/>
 
         <TextView
             android:id="@+id/textView4"
@@ -83,7 +93,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:text="@string/total"/>
+            android:text="@string/total"
+            android:textColor="?attr/textColour"/>
+
+        <Button
+            android:id="@+id/reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reset Count"
+            android:onClick="onClickBtn"/>
     </LinearLayout>
 
     <org.eazegraph.lib.charts.BarChart

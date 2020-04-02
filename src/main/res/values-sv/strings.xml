@@ -60,4 +60,6 @@
     <string name="no_sensor_explain">Denna app kräver en dedikerad stegräknare i hårdvara, som din enhet saknar. Den här appen kan inte köra på din enhet.</string>
     <string name="permission_external_storage">Saknar tillstånd att komma åt extern lagring</string>
     <string name="notification_settings">Notifieringsinställningar</string>
+    <string name="dark_theme">Aktivera / inaktivera mörkt tema</string>
+    <string name="dark_theme_title">Mörkt tema</string>
 </resources>

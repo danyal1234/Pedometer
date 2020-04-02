@@ -54,5 +54,6 @@
     <string name="close">cerrar</string>
     <string name="no_split_active">No hay contador parcial activo. Pulsa iniciar para contar los pasos a partir de este momento</string>
     <string name="split_count">Contador parcial</string>
-    
+    <string name="dark_theme">Activar / Desactivar tema oscuro</string>
+    <string name="dark_theme_title">Tema oscuro</string>
 </resources>

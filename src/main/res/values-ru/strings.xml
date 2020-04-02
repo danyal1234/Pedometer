@@ -60,6 +60,8 @@
     <string name="pause_on_power_summary">Остановить шагомер во время зарядки устройства</string>
     <string name="no_sensor">Датчик не найден</string>
     <string name="no_sensor_explain">Данному приложению требуется аппаратный датчик шагов, которого нет в вашем устройстве. Это приложение не будет работать на вашем устройстве.</string>
-    <string name="permission_external_storage">Нет прав на запись во внешнее хранилище данных</string>    
+    <string name="permission_external_storage">Нет прав на запись во внешнее хранилище данных</string>
+    <string name="dark_theme">Включить / отключить темную тему</string>
+    <string name="dark_theme_title">Темная тема</string>
 
 </resources>

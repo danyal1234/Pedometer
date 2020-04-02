@@ -82,4 +82,6 @@
         donanıma ihtiyaç duyar. Bu uygulama cihazınız çalışmayacak.
     </string>
     <string name="permission_external_storage">Harici depolama alanına erişim izni yok</string>
+    <string name="dark_theme">Koyu temayı etkinleştirme / devre dışı bırakma</string>
+    <string name="dark_theme_title">Karanlık tema</string>
 </resources>

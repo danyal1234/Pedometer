@@ -59,5 +59,7 @@
     <string name="no_sensor">Sensoria ei löydetty</string>
     <string name="no_sensor_explain">Tämä sovellus tarvitsee erillisen laitteistosensorin jota laittessasi ei ole. Sovellus ei toimi laitteessasi.</string>
     <string name="permission_external_storage">Ei lupaa ulkoisen muistin käsittelyyn</string>
+    <string name="dark_theme">Ota tumma teema käyttöön / poista se käytöstä</string>
+    <string name="dark_theme_title">Tumma teema</string>
 </resources>
 

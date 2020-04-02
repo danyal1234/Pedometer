@@ -83,4 +83,6 @@
         amellyel a készülék nem rendelkezik. Ez az alkalmazás nem fog futni a készüléken.
     </string>
     <string name="permission_external_storage">Nincs engedély a külső tárhely elérésére</string>
+    <string name="dark_theme">A sötét téma engedélyezése / letiltása</string>
+    <string name="dark_theme_title">Sötét téma</string>
 </resources>

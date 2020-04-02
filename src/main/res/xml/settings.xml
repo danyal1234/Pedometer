@@ -23,5 +23,9 @@
         android:key="import"
         android:summary="@string/import_summary"
         android:title="@string/import_title"/>
+    <SwitchPreference
+        android:key="switch"
+        android:summary="@string/dark_theme"
+        android:title="@string/dark_theme_title"/>
 
 </PreferenceScreen>

@@ -28,3 +28,10 @@ Pedometer uses the [EazeGraphLibrary](https://github.com/blackfizz/EazeGraph "Ea
   <img alt="Get it on F-Droid"
        src="https://cloud.githubusercontent.com/assets/12447257/8024903/ce8dca32-0d44-11e5-95b0-e97d1d027351.png" />
 </a>
+
+Additions by Danyal
+
+Dark theme and daily graph
+
+<td><img width="200px" src="dailyview.png" /></td>
+<td><img width="200px" src="weeklyview.png" /></td>

@@ -29,4 +29,6 @@
     <string name="import_title">Importuoti/Atkurti</string>
     <string name="export_title">Eksportuoti/Išsaugoti</string>
     <string name="about_app_version">Programėlės versija: %s</string>
+    <string name="dark_theme">Įgalinti / išjungti tamsią temą</string>
+    <string name="dark_theme_title">Tamsi tema</string>
 </resources>

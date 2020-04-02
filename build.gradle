@@ -12,7 +12,7 @@ buildscript {
             classpath rootProject.ext.gradle_classpath
         } else {
             logger.warn('classpath not found in rootProject')
-            classpath 'com.android.tools.build:gradle:3.0.1'
+            classpath 'com.android.tools.build:gradle:3.5.0'
         }
     }
 }
@@ -32,6 +32,8 @@ android {
 
     defaultConfig {
         applicationId "de.j4velin.pedometer"
+        minSdkVersion 19
+        multiDexEnabled true
     }
 
     signingConfigs {
@@ -49,9 +51,13 @@ android {
         }
     }
 
-    lintOptions{
+    lintOptions {
         disable 'MissingTranslation'
         disable 'ExtraTranslation'
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 
     buildTypes {
@@ -69,6 +75,11 @@ android {
             minifyEnabled false
         }
     }
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java', 'src/test', 'src/androidTest', 'src/androidTest/java', 'src/test/java']
+        }
+    }
 }
 
 repositories {
@@ -82,12 +93,16 @@ repositories {
 
 dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.jjoe64:graphview:4.2.2'
     implementation 'com.github.j4velin.colorpicker:colorpicker:1.20.6'
     implementation 'com.github.j4velin.EazeGraph:EazeGraph:1.0.3'
     implementation 'com.google.android.apps.dashclock:dashclock-api:2.0.0'
+    implementation 'com.android.support:multidex:1.0.3'
     playImplementation 'com.google.android.gms:play-services-fitness:15.0.1'
     playImplementation 'com.google.android.gms:play-services-games:15.0.1'
     playImplementation 'com.google.android.gms:play-services-identity:15.0.1'
+    compile 'junit:junit:4.12'
+    compile 'org.robolectric:robolectric:3.0'
 }
 
 def props = new Properties()

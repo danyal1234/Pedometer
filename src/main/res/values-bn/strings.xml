@@ -59,4 +59,6 @@
     <string name="goal_reached_notification">লক্ষ্যে পৌঁছেছেন ! %s  টি পদক্ষেপ এবং গণনা চলছে</string>
     <string name="pause_on_power_summary">ডিভাইস চার্জ করার সময় প্যাসিমেটার বিরত</string>
     <string name="no_split_active">কোন বিভক্ত গণক সক্রিয় নেই. এখন থেকে পদক্ষেপ গণনা চালু করতে শুরুতে ক্লিক করুন</string>
+    <string name="dark_theme">অন্ধকার থিম সক্ষম / অক্ষম করুন</string>
+    <string name="dark_theme_title">গাark় থিম</string>
 </resources>
